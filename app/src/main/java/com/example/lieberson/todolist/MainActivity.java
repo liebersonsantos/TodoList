@@ -118,22 +118,27 @@ public class MainActivity extends Activity {
             /*criando adaptador*/
             itens = new ArrayList<String>();
             ids = new ArrayList<Integer>();
-            itensAdaptador = new ArrayAdapter<String>(getApplicationContext(),
-                                                      android.R.layout.simple_list_item_2,
-                                                      android.R.id.text2,
-                                                      itens);
-            listaTarefas.setAdapter(itensAdaptador);
 
             /*listando as tarefas*/
-            cursor.moveToFirst();
+            if (cursor.getCount() > 0){
 
-            while (cursor != null){
+                cursor.moveToFirst();
+                do {
 
-                Log.i("Resultado - ", "Tarefa: " + cursor.getString(indiceColunaTarefa));
-                itens.add(cursor.getString(indiceColunaTarefa));
-                ids.add(Integer.parseInt(cursor.getString(indiceColunaId)));
-                cursor.moveToNext();
+                    Log.i("Resultado - ", "Tarefa: " + cursor.getString(indiceColunaTarefa));
+                    itens.add(cursor.getString(indiceColunaTarefa));
+                    ids.add(Integer.parseInt(cursor.getString(indiceColunaId)));
+                    cursor.moveToNext();
+
+                }while (cursor.moveToNext());
             }
+
+            itensAdaptador = new ArrayAdapter<String>(getApplicationContext(),
+                    android.R.layout.simple_list_item_1,
+                    android.R.id.text1,
+                    itens);
+            listaTarefas.setAdapter(itensAdaptador);
+
 
         }catch (Exception e){
 
