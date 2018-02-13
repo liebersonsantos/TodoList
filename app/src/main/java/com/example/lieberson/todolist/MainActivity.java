@@ -3,7 +3,6 @@ package com.example.lieberson.todolist;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,13 +28,12 @@ public class MainActivity extends Activity {
     private ArrayList<Integer> ids;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        try{
+        try {
             /*Recuperando os componentes do layout*/
             textoTarefa = findViewById(R.id.textoId);
             botaoAdicionar = findViewById(R.id.botaoAdicionarId);
@@ -63,6 +61,16 @@ public class MainActivity extends Activity {
                 }
             });
 
+            listaTarefas.setLongClickable(true);
+            listaTarefas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    removerTarefa( ids.get( position ) );
+                    return true;
+                }
+            });
+
+/*
             listaTarefas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -70,41 +78,42 @@ public class MainActivity extends Activity {
                     removerTarefa(ids.get(i));
                 }
             });
+*/
 
             /*recuperar  tarefas*/
             recuperarTarefas();
 
 
-        }catch (Exception e){
-             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
 
         }
 
     }
 
-    private void salvarTarefa(String texto){
+    private void salvarTarefa(String texto) {
 
         try {
 
-            if (texto.equals("")){
+            if (texto.equals("")) {
 
                 Toast.makeText(MainActivity.this, "Digite uma Tarefa", Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
 
-                bancoDados.execSQL("INSERT INTO tarefas (tarefa) VALUES('"+ texto +"')");
+                bancoDados.execSQL("INSERT INTO tarefas (tarefa) VALUES('" + texto + "')");
                 Toast.makeText(MainActivity.this, "Tarefa salva com Sucesso", Toast.LENGTH_SHORT).show();
                 recuperarTarefas();
                 textoTarefa.setText("");
 
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
         }
     }
 
-    private void recuperarTarefas(){
+    private void recuperarTarefas() {
 
         try {
 
@@ -120,7 +129,7 @@ public class MainActivity extends Activity {
             ids = new ArrayList<Integer>();
 
             /*listando as tarefas*/
-            if (cursor.getCount() > 0){
+            if (cursor.getCount() > 0) {
 
                 cursor.moveToFirst();
                 do {
@@ -130,7 +139,7 @@ public class MainActivity extends Activity {
                     ids.add(Integer.parseInt(cursor.getString(indiceColunaId)));
                     cursor.moveToNext();
 
-                }while (cursor.moveToNext());
+                } while (cursor.moveToNext());
             }
 
             itensAdaptador = new ArrayAdapter<String>(getApplicationContext(),
@@ -140,20 +149,20 @@ public class MainActivity extends Activity {
             listaTarefas.setAdapter(itensAdaptador);
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
         }
     }
 
-    private void removerTarefa(Integer id){
+    private void removerTarefa(Integer id) {
         try {
 
-            bancoDados.execSQL("DELETE FROM tarefas WHERE id ="+id);
+            bancoDados.execSQL("DELETE FROM tarefas WHERE id =" + id);
             recuperarTarefas();
             Toast.makeText(MainActivity.this, "Tarefa removida com Sucesso", Toast.LENGTH_SHORT).show();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
